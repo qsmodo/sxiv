@@ -6,8 +6,8 @@ Changes
 -------
 
 * If a single image argument is given, the image is displayed as
-expected, but all other images in the directory are also loaded. 
-[(#352)](https://github.com/muennich/sxiv/issues/352).
+expected, but all other images in the directory are also loaded for 
+navigation [(#352)](https://github.com/muennich/sxiv/issues/352).
 
     * If more than one argument is given, then only the specified files
     and directories are loaded, as in mainstream Sxiv.
@@ -22,3 +22,9 @@ can be changed via `mark` X-resource. Incorporated from
 overriden via `background` and `foreground` X-resources.
 
 * Escape key can be mapped in `config.h`.
+
+Install
+-------
+
+    $ make
+    # make install

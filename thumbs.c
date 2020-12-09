@@ -474,7 +474,7 @@ void tns_mark(tns_t *tns, int n, bool mark)
 
         if (mark) col = win->markcol.pixel;
         win_draw_rect(win, t->x - oxy, t->y - oxy, t->w + owh, t->h + owh,
-                      false, tns->bw - 1, col);
+                      false, tns->bw, col);
 
 		if (!mark && n == *tns->sel)
 			tns_highlight(tns, n, true);
