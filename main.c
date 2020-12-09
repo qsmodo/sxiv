@@ -22,6 +22,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <libgen.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
@@ -101,9 +102,19 @@ void cleanup(void)
 	win_close(&win);
 }
 
+char *check_and_get_path(char *filename)
+{
+	char *path;
+	if (access(filename, R_OK) < 0 ||
+		(path = realpath(filename, NULL)) == NULL)
+		error(0, errno, "%s", filename);
+	return(path);
+}
+
 void check_add_file(char *filename, bool given)
 {
 	char *path;
+	int i;
 
 	if (*filename == '\0')
 		return;
@@ -114,6 +125,12 @@ void check_add_file(char *filename, bool given)
 		if (given)
 			error(0, errno, "%s", filename);
 		return;
+	}
+
+	/* If file is already present in files array, don't duplicate it */
+	for (i = 0; i < fileidx; i++){
+		if (!strcmp(files[i].path, path))
+			return;
 	}
 
 	if (fileidx == filecnt) {
@@ -367,7 +384,7 @@ void update_info(void)
 			bar_put(l, "Caching... %0*d", fw, tns.initnext + 1);
 		else
 			strncpy(l->buf, files[fileidx].name, l->size);
-		bar_put(r, "%s%0*d/%d", mark, fw, fileidx + 1, filecnt);
+		bar_put(r, "%s%d %0*d/%d", mark, markcnt, fw, fileidx + 1, filecnt);
 	} else {
 		bar_put(r, "%s", mark);
 		if (img.ss.on) {
@@ -586,9 +603,7 @@ void on_keypress(XKeyEvent *kev)
 	}
 	if (IsModifierKey(ksym))
 		return;
-	if (ksym == XK_Escape && MODMASK(kev->state) == 0) {
-		extprefix = False;
-	} else if (extprefix) {
+	else if (extprefix) {
 		run_key_handler(XKeysymToString(ksym), kev->state & ~sh);
 		extprefix = False;
 	} else if (key >= '0' && key <= '9') {
@@ -822,7 +837,7 @@ int main(int argc, char **argv)
 	int i, start;
 	size_t n;
 	ssize_t len;
-	char *filename;
+	char *filename, savedname[PATH_MAX]={0};
 	const char *homedir, *dsuffix = "";
 	struct stat fstats;
 	r_dir_t dir;
@@ -873,28 +888,49 @@ int main(int argc, char **argv)
 			continue;
 		}
 		if (!S_ISDIR(fstats.st_mode)) {
-			check_add_file(filename, true);
-		} else {
-			if (r_opendir(&dir, filename, options->recursive) < 0) {
-				error(0, errno, "%s", filename);
+			char *path = check_and_get_path(filename);
+
+			// Set the first command line argument as the displayed file
+			if (fileidx == 0) memcpy(savedname, path, sizeof(savedname));
+
+			// If single file as argument, the whole directory will be scanned 
+			if (options->filecnt == 1) filename = dirname(filename);
+			else { 
+				check_add_file(filename, true);
 				continue;
 			}
-			start = fileidx;
-			while ((filename = r_readdir(&dir, true)) != NULL) {
-				check_add_file(filename, false);
-				free((void*) filename);
-			}
-			r_closedir(&dir);
-			if (fileidx - start > 1)
-				qsort(files + start, fileidx - start, sizeof(fileinfo_t), fncmp);
 		}
+
+		if (r_opendir(&dir, filename, options->recursive) < 0) {
+			error(0, errno, "%s", filename);
+			continue;
+		}
+		start = fileidx;
+		while ((filename = r_readdir(&dir, true)) != NULL) {
+			check_add_file(filename, false);
+			free((void*) filename);
+		}
+		r_closedir(&dir);
+		if (fileidx - start > 1)
+			qsort(files + start, fileidx - start, sizeof(fileinfo_t), fncmp);
 	}
 
 	if (fileidx == 0)
 		error(EXIT_FAILURE, 0, "No valid image file given, aborting");
 
 	filecnt = fileidx;
-	fileidx = options->startnum < filecnt ? options->startnum : 0;
+	// If -n has been given, use it. Else, display the first argument file
+	if (options->startnum > 0)
+		fileidx = options->startnum < filecnt ? options->startnum : 0;
+	else {
+		for (i = 0; i < filecnt; i++){
+			if (!strcmp(files[i].path, savedname)){
+				fileidx = i;
+				break;
+			}
+			fileidx=0;
+		}
+	}
 
 	for (i = 0; i < ARRLEN(buttons); i++) {
 		if (buttons[i].cmd == i_cursor_navigate) {

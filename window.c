@@ -92,7 +92,7 @@ const char* win_res(XrmDatabase db, const char *name, const char *def)
 void win_init(win_t *win)
 {
 	win_env_t *e;
-	const char *bg, *fg, *f;
+	const char *bg, *fg, *mark, *f;
 	char *res_man;
 	XrmDatabase db;
 
@@ -119,10 +119,12 @@ void win_init(win_t *win)
 	f = win_res(db, RES_CLASS ".font", "monospace-8");
 	win_init_font(e, f);
 
-	bg = win_res(db, RES_CLASS ".background", "white");
-	fg = win_res(db, RES_CLASS ".foreground", "black");
+	bg = win_res(db, RES_CLASS ".background", "#303048");
+	fg = win_res(db, RES_CLASS ".foreground", "green");
+	mark = win_res(db, RES_CLASS ".mark", "red");
 	win_alloc_color(e, bg, &win->bg);
 	win_alloc_color(e, fg, &win->fg);
+ 	win_alloc_color(e, mark, &win->markcol);
 
 	win->bar.l.size = BAR_L_LEN;
 	win->bar.r.size = BAR_R_LEN;
