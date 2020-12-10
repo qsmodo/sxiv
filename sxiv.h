@@ -411,6 +411,8 @@ struct win {
 	XftColor fg;
     XftColor markcol;
 
+    const char *title;
+
 	int x;
 	int y;
 	unsigned int w;
@@ -441,7 +443,7 @@ void win_toggle_bar(win_t*);
 void win_clear(win_t*);
 void win_draw(win_t*);
 void win_draw_rect(win_t*, int, int, int, int, bool, int, unsigned long);
-void win_set_title(win_t*, const char*);
+void win_set_title(win_t*);
 void win_set_cursor(win_t*, cursor_t);
 void win_cursor_pos(win_t*, int*, int*);
 

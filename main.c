@@ -837,7 +837,7 @@ int main(int argc, char **argv)
 	int i, start;
 	size_t n;
 	ssize_t len;
-	char *filename, savedname[PATH_MAX]={0};
+	char *filename, dirn[PATH_MAX], savedname[PATH_MAX] = {0}, title[] = "Sxiv - ";
 	const char *homedir, *dsuffix = "";
 	struct stat fstats;
 	r_dir_t dir;
@@ -943,6 +943,11 @@ int main(int argc, char **argv)
 	win_init(&win);
 	img_init(&img, &win);
 	arl_init(&arl);
+
+    // Set window title to Sxiv - [First file's directory's basename]
+    strncpy(dirn, files[0].path, sizeof(dirn)-1);
+    strncat(title, basename(dirname(dirn)), PATH_MAX);
+    win.title = title;
 
 	if ((homedir = getenv("XDG_CONFIG_HOME")) == NULL || homedir[0] == '\0') {
 		homedir = getenv("HOME");

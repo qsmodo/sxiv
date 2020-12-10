@@ -240,7 +240,7 @@ void win_open(win_t *win)
 	}
 	free(icon_data);
 
-	win_set_title(win, "sxiv");
+	win_set_title(win);
 
 	classhint.res_class = RES_CLASS;
 	classhint.res_name = options->res_name != NULL ? options->res_name : "sxiv";
@@ -445,17 +445,17 @@ void win_draw_rect(win_t *win, int x, int y, int w, int h, bool fill, int lw,
 		XDrawRectangle(win->env.dpy, win->buf.pm, gc, x, y, w, h);
 }
 
-void win_set_title(win_t *win, const char *title)
+void win_set_title(win_t *win)
 {
-	XStoreName(win->env.dpy, win->xwin, title);
-	XSetIconName(win->env.dpy, win->xwin, title);
+	XStoreName(win->env.dpy, win->xwin, win->title);
+	XSetIconName(win->env.dpy, win->xwin, win->title);
 
 	XChangeProperty(win->env.dpy, win->xwin, atoms[ATOM__NET_WM_NAME],
 	                XInternAtom(win->env.dpy, "UTF8_STRING", False), 8,
-	                PropModeReplace, (unsigned char *) title, strlen(title));
+	                PropModeReplace, (unsigned char *) win->title, strlen(win->title));
 	XChangeProperty(win->env.dpy, win->xwin, atoms[ATOM__NET_WM_ICON_NAME],
 	                XInternAtom(win->env.dpy, "UTF8_STRING", False), 8,
-	                PropModeReplace, (unsigned char *) title, strlen(title));
+	                PropModeReplace, (unsigned char *) win->title, strlen(win->title));
 }
 
 void win_set_cursor(win_t *win, cursor_t cursor)
