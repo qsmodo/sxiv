@@ -14,6 +14,9 @@ navigation [(#352)](https://github.com/muennich/sxiv/issues/352).
 
 * No file will ever be loaded twice.
 
+* The directory of the first command-line argument was included in window title.
+It is now `Sxiv - [Directory's basename]`.
+
 * Marks are more conspicuous, a red rectangle around the image. The color
 can be changed via `mark` X-resource. Incorporated from 
 [#294, thanks to @spaeps](https://github.com/muennich/sxiv/issues/294).
