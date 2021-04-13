@@ -168,14 +168,14 @@ Zoom out.
 .B m
 Mark/unmark the current image.
 .TP
-.B M
+.B Ctrl-m
 Reverse all image marks.
 .TP
-.B Ctrl-M
+.B M
 Repeat last mark action on all images from the last marked/unmarked up to the
 current one.
 .TP
-.B Ctrl-m
+.B Ctrl-u
 Remove all image marks.
 .TP
 .B N
@@ -379,18 +379,32 @@ Zoom out.
 The following X resources are supported:
 .TP
 .B background
-Color of the window background and bar foreground
+Color of the window background. Default: #303048.
 .TP
 .B foreground
-Color of the window foreground and bar background
+Color of the window foreground. Default: green.
 .TP
-.B font
-Name of Xft bar font
+.B barBackground
+Color of the status bar background. Default: green.
+.TP
+.B barForeground
+Color of the status bar foreground. Default: black.
 .TP
 .B mark
-Color of the frame around marked images
+Color of the frame around marked images. Default: red.
 .TP
-Please see xrdb(1) on how to change them.
+.B font
+Name of Xft bar font. Default: monospace-8.
+.TP
+.B titlePrefix
+The window title is {titlePrefix}{Directory basename}. Default: sxiv - .
+.PP
+Please see xrdb(1) on how to change them. For a trailing space in
+.BR titlePrefix ,
+use the octal \\040.
+
+Keyboard and mouse commands can be modified in the config.def.h. Then you
+must reinstall sxiv.
 .SH STATUS BAR
 The information displayed on the left side of the status bar can be replaced
 with the output of a user-provided script, which is called by sxiv whenever an
