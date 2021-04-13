@@ -92,7 +92,7 @@ const char* win_res(XrmDatabase db, const char *name, const char *def)
 void win_init(win_t *win)
 {
 	win_env_t *e;
-	const char *bg, *fg, *mark, *f;
+	const char *bg, *fg, *fsbg, *barbg, *barfg, *mark, *f;
 	char *res_man;
 	XrmDatabase db;
 
@@ -119,12 +119,22 @@ void win_init(win_t *win)
 	f = win_res(db, RES_CLASS ".font", "monospace-8");
 	win_init_font(e, f);
 
+	memset(&win->title, 0, sizeof(win->title));
+	strncpy(win->title, win_res(db, RES_CLASS ".titlePrefix", "sxiv - "),
+            sizeof(win->title)-1);
+
 	bg = win_res(db, RES_CLASS ".background", "#303048");
 	fg = win_res(db, RES_CLASS ".foreground", "green");
+	fsbg = win_res(db, RES_CLASS ".fsBackground", "#303048");
+	barbg = win_res(db, RES_CLASS ".barBackground", "green");
+	barfg = win_res(db, RES_CLASS ".barForeground", "black");
 	mark = win_res(db, RES_CLASS ".mark", "red");
 	win_alloc_color(e, bg, &win->bg);
 	win_alloc_color(e, fg, &win->fg);
- 	win_alloc_color(e, mark, &win->markcol);
+	win_alloc_color(e, fsbg, &win->fsbg);
+	win_alloc_color(e, barbg, &win->barbg);
+	win_alloc_color(e, barfg, &win->barfg);
+	win_alloc_color(e, mark, &win->markcol);
 
 	win->bar.l.size = BAR_L_LEN;
 	win->bar.r.size = BAR_R_LEN;
@@ -267,6 +277,7 @@ void win_open(win_t *win)
 	XMapWindow(e->dpy, win->xwin);
 	XFlush(e->dpy);
 
+	win->fullscreen = false;
 	if (options->fullscreen)
 		win_toggle_fullscreen(win);
 }
@@ -314,6 +325,7 @@ void win_toggle_fullscreen(win_t *win)
 	cm->data.l[0] = 2; // toggle
 	cm->data.l[1] = atoms[ATOM__NET_WM_STATE_FULLSCREEN];
 
+	win->fullscreen = !(win->fullscreen);
 	XSendEvent(win->env.dpy, DefaultRootWindow(win->env.dpy), False,
 	           SubstructureNotifyMask | SubstructureRedirectMask, &ev);
 }
@@ -342,7 +354,8 @@ void win_clear(win_t *win)
 		win->buf.pm = XCreatePixmap(e->dpy, win->xwin,
 		                            win->buf.w, win->buf.h, e->depth);
 	}
-	XSetForeground(e->dpy, gc, win->bg.pixel);
+	XSetForeground(e->dpy, gc,
+	               win->fullscreen ? win->fsbg.pixel : win->bg.pixel);
 	XFillRectangle(e->dpy, win->buf.pm, gc, 0, 0, win->buf.w, win->buf.h);
 }
 
@@ -399,7 +412,7 @@ void win_draw_bar(win_t *win)
 	d = XftDrawCreate(e->dpy, win->buf.pm, DefaultVisual(e->dpy, e->scr),
 	                  DefaultColormap(e->dpy, e->scr));
 
-	XSetForeground(e->dpy, gc, win->fg.pixel);
+	XSetForeground(e->dpy, gc, win->barbg.pixel);
 	XFillRectangle(e->dpy, win->buf.pm, gc, 0, win->h, win->w, win->bar.h);
 
 	XSetForeground(e->dpy, gc, win->bg.pixel);
@@ -410,12 +423,12 @@ void win_draw_bar(win_t *win)
 			return;
 		x = win->w - tw - H_TEXT_PAD;
 		w -= tw;
-		win_draw_text(win, d, &win->bg, x, y, r->buf, len, tw);
+		win_draw_text(win, d, &win->barfg, x, y, r->buf, len, tw);
 	}
 	if ((len = strlen(l->buf)) > 0) {
 		x = H_TEXT_PAD;
 		w -= 2 * H_TEXT_PAD; /* gap between left and right parts */
-		win_draw_text(win, d, &win->bg, x, y, l->buf, len, w);
+		win_draw_text(win, d, &win->barfg, x, y, l->buf, len, w);
 	}
 	XftDrawDestroy(d);
 }

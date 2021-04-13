@@ -407,11 +407,16 @@ struct win {
 	Window xwin;
 	win_env_t env;
 
-	XftColor bg;
-	XftColor fg;
-    XftColor markcol;
+	bool fullscreen;
 
-    const char *title;
+	XftColor bg;
+	XftColor fsbg;
+	XftColor barbg;
+	XftColor barfg;
+	XftColor fg;
+	XftColor markcol;
+
+    char title[PATH_MAX];
 
 	int x;
 	int y;
