@@ -6,7 +6,7 @@ Changes
 -------
 
 * If a single image argument is given, the image is displayed as
-expected, but all other images in the directory are also loaded for 
+expected, but all **other images in the directory are also loaded** for 
 navigation [(#352)](https://github.com/muennich/sxiv/issues/352).
 
     * If more than one argument is given, then only the specified files
@@ -14,15 +14,17 @@ navigation [(#352)](https://github.com/muennich/sxiv/issues/352).
 
 * No file will ever be loaded twice.
 
-* The directory of the first command-line argument was included in window title.
-It is now `Sxiv - [Directory's basename]`.
+* Additional X-resources:
 
-* Marks are more conspicuous, a red rectangle around the image. The color
-can be changed via `mark` X-resource. Incorporated from 
-[#294, thanks to @spaeps](https://github.com/muennich/sxiv/issues/294).
+    * **Marks** are more conspicuous, a red rectangle around the image.
+    [Thanks to @spaeps](https://github.com/muennich/sxiv/issues/294).
 
-* Background is dark and foreground is green by default. Both can still be
-overriden via `background` and `foreground` X-resources.
+    * **Status bar colors**. 
+    [Thanks to @jakem72360](https://github.com/muennich/sxiv/pull/386).
+
+    * The directory of the first command-line argument was included in
+    **window title**, which is now `[titlePrefix][Directory's basename]`,
+    where `titlePrefix` defaults to "sxiv - ".
 
 * Escape key can be mapped in `config.h`.
 
