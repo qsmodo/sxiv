@@ -26,6 +26,8 @@ navigation [(#352)](https://github.com/muennich/sxiv/issues/352).
     **window title**, which is now `[titlePrefix][Directory's basename]`,
     where `titlePrefix` defaults to "sxiv - ".
 
+    * The full-screen background can be different.
+
 * Escape key can be mapped in `config.h`.
 
 Install
