@@ -360,6 +360,8 @@ extern const char *progname;
 void* emalloc(size_t);
 void* erealloc(void*, size_t);
 char* estrdup(const char*);
+void estrncat(char*, size_t, const char*);
+void esnprintf(char*, size_t, const char*, const char*);
 void error(int, int, const char*, ...);
 void size_readable(float*, const char**);
 int r_opendir(r_dir_t*, const char*, bool);
@@ -416,7 +418,7 @@ struct win {
 	XftColor fg;
 	XftColor markcol;
 
-    char title[PATH_MAX];
+	char title[256];
 
 	int x;
 	int y;

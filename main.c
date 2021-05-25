@@ -837,7 +837,7 @@ int main(int argc, char **argv)
 	int i, start;
 	size_t n;
 	ssize_t len;
-	char *filename, dirn[PATH_MAX] = {0}, savedname[PATH_MAX] = {0};
+	char *filename, *dirpath, *dirbase, *savedname = "";
 	const char *homedir, *dsuffix = "";
 	struct stat fstats;
 	r_dir_t dir;
@@ -891,7 +891,7 @@ int main(int argc, char **argv)
 			char *path = check_and_get_path(filename);
 
 			// Set the first command line argument as the displayed file
-			if (fileidx == 0) memcpy(savedname, path, sizeof(savedname));
+			if (fileidx == 0) savedname = estrdup(path);
 
 			// If single file as argument, the whole directory will be scanned 
 			if (options->filecnt == 1) filename = dirname(filename);
@@ -931,6 +931,8 @@ int main(int argc, char **argv)
 			fileidx=0;
 		}
 	}
+	if (*savedname) 
+		free(savedname);
 
 	for (i = 0; i < ARRLEN(buttons); i++) {
 		if (buttons[i].cmd == i_cursor_navigate) {
@@ -943,10 +945,6 @@ int main(int argc, char **argv)
 	win_init(&win);
 	img_init(&img, &win);
 	arl_init(&arl);
-
-    // Set window title to sxiv - [First file's directory's basename]
-    strncpy(dirn, files[0].path, sizeof(dirn)-1);
-    strncat(win.title, basename(dirname(dirn)), sizeof(win.title)-1);
 
 	if ((homedir = getenv("XDG_CONFIG_HOME")) == NULL || homedir[0] == '\0') {
 		homedir = getenv("HOME");
@@ -978,6 +976,15 @@ int main(int argc, char **argv)
 		tns.thumbs = NULL;
 		load_image(fileidx);
 	}
+
+	/* Set window title to [prefix][first file's directory's basename].
+	 * At this point the title already contains the prefix (from win_init
+     * function). This hidden dependency is something to improve. */
+	dirpath = estrdup(files[0].path);
+	dirbase = basename(dirname(dirpath));
+	estrncat(win.title, sizeof(win.title), dirbase);
+	free(dirpath);
+
 	win_open(&win);
 	win_set_cursor(&win, CURSOR_WATCH);
 

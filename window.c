@@ -119,9 +119,8 @@ void win_init(win_t *win)
 	f = win_res(db, RES_CLASS ".font", "monospace-8");
 	win_init_font(e, f);
 
-	memset(&win->title, 0, sizeof(win->title));
-	strncpy(win->title, win_res(db, RES_CLASS ".titlePrefix", "sxiv - "),
-            sizeof(win->title)-1);
+	esnprintf(win->title, sizeof(win->title), "%s",
+	          win_res(db, RES_CLASS ".titlePrefix", "sxiv - "));
 
 	bg = win_res(db, RES_CLASS ".background", "#303048");
 	fg = win_res(db, RES_CLASS ".foreground", "green");

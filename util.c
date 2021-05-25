@@ -57,6 +57,23 @@ char* estrdup(const char *s)
 	return d;
 }
 
+void estrncat(char *dst, size_t n, const char *src)
+{
+	/* Not enough room, truncate the string to the null string. */
+	if (n - strlen(dst) <= strlen(src))
+		*dst = '\0';
+	else
+		(void)strncat(dst, src, n - strlen(src) - 1);
+}
+
+void esnprintf(char *dst, size_t n, const char *fmt, const char *src)
+{
+	int len = snprintf(dst, n, fmt, src);
+	/* If failed or not enough room, truncate the string to the null string. */
+	if (len < 0 || len >= n)
+		*dst = '\0';
+}
+
 void error(int eval, int err, const char* fmt, ...)
 {
 	va_list ap;
