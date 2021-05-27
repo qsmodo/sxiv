@@ -14,17 +14,17 @@ navigation [(#352)](https://github.com/muennich/sxiv/issues/352).
 
 * No file will ever be loaded twice.
 
-* Additional X-resources:
+* Additional configurable options (via X-resources):
 
     * **Marks** are more conspicuous, a red rectangle around the image.
-    [Thanks to @spaeps](https://github.com/muennich/sxiv/issues/294).
 
     * **Status bar colors**. 
-    [Thanks to @jakem72360](https://github.com/muennich/sxiv/pull/386).
 
-    * The directory of the first command-line argument was included in
-    **window title**, which is now `[titlePrefix][Directory's basename]`,
-    where `titlePrefix` defaults to "sxiv - ".
+    * **External key handler** can be invoked in a single key press.
+
+    * **Window title** contains the directory of the first image.
+    It is now `[titlePrefix][Directory's basename]`, where `[titlePrefix]`
+    defaults to "sxiv - ".
 
     * The full-screen background can be different.
 
