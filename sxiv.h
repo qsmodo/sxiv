@@ -410,6 +410,7 @@ struct win {
 	win_env_t env;
 
 	bool fullscreen;
+	bool handlerkey;
 
 	XftColor bg;
 	XftColor fsbg;

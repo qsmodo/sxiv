@@ -590,7 +590,7 @@ void on_keypress(XKeyEvent *kev)
 	unsigned int sh = 0;
 	KeySym ksym, shksym;
 	char dummy, key;
-	bool dirty = false;
+	bool dirty = false, bound = false;
 
 	XLookupString(kev, &key, 1, &ksym, NULL);
 
@@ -603,9 +603,9 @@ void on_keypress(XKeyEvent *kev)
 	}
 	if (IsModifierKey(ksym))
 		return;
-	else if (extprefix) {
+	else if (extprefix && win.handlerkey) {
 		run_key_handler(XKeysymToString(ksym), kev->state & ~sh);
-		extprefix = False;
+		extprefix = false;
 	} else if (key >= '0' && key <= '9') {
 		/* number prefix for commands */
 		prefix = prefix * 10 + (int) (key - '0');
@@ -616,12 +616,15 @@ void on_keypress(XKeyEvent *kev)
 		    keys[i].cmd >= 0 && keys[i].cmd < CMD_COUNT &&
 		    (cmds[keys[i].cmd].mode < 0 || cmds[keys[i].cmd].mode == mode))
 		{
+			bound = true;
 			if (cmds[keys[i].cmd].func(keys[i].arg))
 				dirty = true;
 		}
 	}
 	if (dirty)
 		redraw();
+	else if (!win.handlerkey && !bound)
+		run_key_handler(XKeysymToString(ksym), kev->state & ~sh);
 	prefix = 0;
 }
 

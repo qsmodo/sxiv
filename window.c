@@ -135,6 +135,9 @@ void win_init(win_t *win)
 	win_alloc_color(e, barfg, &win->barfg);
 	win_alloc_color(e, mark, &win->markcol);
 
+	win->handlerkey = STREQ("true",
+	                        win_res(db, RES_CLASS ".handlerKey", "true"));
+
 	win->bar.l.size = BAR_L_LEN;
 	win->bar.r.size = BAR_R_LEN;
 	/* 3 padding bytes needed by utf8_decode */

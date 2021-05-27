@@ -131,8 +131,10 @@ Toggle fullscreen mode.
 Toggle visibility of info bar on bottom of window.
 .TP
 .B Ctrl-x
-Send the next key to the external key-handler. See section EXTERNAL KEY HANDLER
-for more information.
+Send the next key to the external key-handler. It has no effect if
+.I handlerKey
+(see section CONFIGURATION) is false.
+See section EXTERNAL KEY HANDLER for more information.
 .TP
 .B g
 Go to the first image.
@@ -240,6 +242,8 @@ Go
 .I count
 images backward.
 .TP
+.B Ctrl-6
+Go to the last viewed image.
 .B [
 Go
 .I count
@@ -376,38 +380,47 @@ Zoom in.
 .B ScrollDown
 Zoom out.
 .SH CONFIGURATION
-The following X resources are supported:
+The following X resources are supported, with their default value
+in parenthesis:
 .TP
-.B background
-Color of the window background. Default: #303048.
+.BI background " (#303048)"
+Color of the window background.
 .TP
-.B foreground
-Color of the window foreground. Default: green.
+.BI foreground " (green)"
+Color of the window foreground.
 .TP
-.B fsBackground
-Color of the window background on fullscreen mode. Default: #303048.
+.BI fsBackground " (#303048)"
+Color of the window background on fullscreen mode.
 .TP
-.B barBackground
-Color of the status bar background. Default: green.
+.BI barBackground " (green)"
+Color of the status bar background.
 .TP
-.B barForeground
-Color of the status bar foreground. Default: black.
+.BI barForeground " (black)"
+Color of the status bar foreground.
 .TP
-.B mark
-Color of the frame around marked images. Default: red.
+.BI mark " (red)"
+Color of the frame around marked images.
 .TP
-.B font
-Name of Xft bar font. Default: monospace-8.
+.BI font " (monospace-8)"
+Name of Xft bar font.
 .TP
-.B titlePrefix
-The window title is {titlePrefix}{Directory basename}. Default: sxiv - .
+.BI titlePrefix " (sxiv - )"
+The window title is
+.IR {titlePrefix} "{Directory basename}."
+.TP
+.BI handlerKey " (true)"
+If
+.IR false ,
+the handler key (Ctrl-X) is not used and any unbound key is
+immediately sent to the external-key-handler.
 .PP
 Please see xrdb(1) on how to change them. For a trailing space in
 .BR titlePrefix ,
 use the octal \\040.
 
-Keyboard and mouse commands can be modified in the config.def.h. Then you
-must reinstall sxiv.
+Keyboard and mouse commands can be modified in the file
+.IR config.h .
+Then you must recompile sxiv.
 .SH STATUS BAR
 The information displayed on the left side of the status bar can be replaced
 with the output of a user-provided script, which is called by sxiv whenever an
