@@ -332,6 +332,8 @@ void load_image(int new)
 	open_info();
 	arl_setup(&arl, files[fileidx].path);
 
+	win_set_title(&win, files[fileidx].path);
+
 	if (img.multi.cnt > 0 && img.multi.animate)
 		set_timeout(animate, img.multi.frames[img.multi.sel].delay, true);
 	else
@@ -840,7 +842,7 @@ int main(int argc, char **argv)
 	int i, start;
 	size_t n;
 	ssize_t len;
-	char *filename, *dirpath, *dirbase, *savedname = "";
+	char *filename, *savedname = "";
 	const char *homedir, *dsuffix = "";
 	struct stat fstats;
 	r_dir_t dir;
@@ -980,15 +982,8 @@ int main(int argc, char **argv)
 		load_image(fileidx);
 	}
 
-	/* Set window title to [prefix][first file's directory's basename].
-	 * At this point the title already contains the prefix (from win_init
-     * function). This hidden dependency is something to improve. */
-	dirpath = estrdup(files[0].path);
-	dirbase = basename(dirname(dirpath));
-	estrncat(win.title, sizeof(win.title), dirbase);
-	free(dirpath);
-
 	win_open(&win);
+	win_set_title(&win, files[fileidx].path);
 	win_set_cursor(&win, CURSOR_WATCH);
 
 	atexit(cleanup);

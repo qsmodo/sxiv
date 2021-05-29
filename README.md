@@ -22,9 +22,18 @@ navigation [(#352)](https://github.com/muennich/sxiv/issues/352).
 
     * **External key handler** can be invoked in a single key press.
 
-    * **Window title** contains the directory of the first image.
-    It is now `[titlePrefix][Directory's basename]`, where `[titlePrefix]`
-    defaults to "sxiv - ".
+    * **Window title** consists of a prefix and a suffix. The prefix is
+    a fixed string and the suffix is one of
+
+      ```
+      0  Basename of file
+      1  Basename of directory
+      2  Full path to file
+      3  Full path to directory
+      4  Empty string
+      ```
+  
+      The default window title is "sxiv - {file basename}".
 
     * The full-screen background can be different.
 

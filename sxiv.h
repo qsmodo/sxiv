@@ -115,6 +115,16 @@ typedef enum {
 	FF_TN_INIT = 4
 } fileflags_t;
 
+typedef enum {
+	BASE_CFILE,
+	BASE_CDIR,
+	CFILE,
+	CDIR,
+	EMPTY,
+
+	SUFFIXMODE_COUNT,
+} suffixmode_t;
+
 typedef struct {
 	const char *name; /* as given by user */
 	const char *path; /* always absolute */
@@ -419,7 +429,9 @@ struct win {
 	XftColor fg;
 	XftColor markcol;
 
-	char title[256];
+	suffixmode_t suffixmode;
+	const char   *prefix;
+	const char   *suffix;
 
 	int x;
 	int y;
@@ -451,7 +463,7 @@ void win_toggle_bar(win_t*);
 void win_clear(win_t*);
 void win_draw(win_t*);
 void win_draw_rect(win_t*, int, int, int, int, bool, int, unsigned long);
-void win_set_title(win_t*);
+void win_set_title(win_t*, const char*);
 void win_set_cursor(win_t*, cursor_t);
 void win_cursor_pos(win_t*, int*, int*);
 

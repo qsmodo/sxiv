@@ -405,8 +405,21 @@ Color of the frame around marked images.
 Name of Xft bar font.
 .TP
 .BI titlePrefix " (sxiv - )"
-The window title is
-.IR {titlePrefix} "{Directory basename}."
+Any string literal to be used as the window title prefix.  For a trailing
+space use the octal \\040, e.g. the resource for the default value is
+.IR "Sxiv.titlePrefix: sxiv\ -\\\\\040" .
+.TP
+.BI titleSuffix " (0)"
+The format of the window title suffix.
+
+.EX
+    Value  Format
+    0      Basename of file
+    1      Basename of directory
+    2      Full path to file
+    3      Full path to directory
+    4      Empty string
+.EE
 .TP
 .BI handlerKey " (true)"
 If
@@ -414,9 +427,7 @@ If
 the handler key (Ctrl-X) is not used and any unbound key is
 immediately sent to the external-key-handler.
 .PP
-Please see xrdb(1) on how to change them. For a trailing space in
-.BR titlePrefix ,
-use the octal \\040.
+Please see xrdb(1) on how to change them.
 
 Keyboard and mouse commands can be modified in the file
 .IR config.h .
