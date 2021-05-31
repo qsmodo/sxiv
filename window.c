@@ -490,23 +490,23 @@ void win_set_title(win_t *win, const char *path)
 			break;
 	}
 
-	/* Set the title. Some WM's that don't comply to EMWH (e.g. mwm) only use 
-	 * WM_NAME for the window title, which is set by XStoreName below. */
+	/* Some ancient WM's that don't comply to EMWH (e.g. mwm) only use WM_NAME for
+	 * the window title, which is set by XStoreName below. */
 	title = emalloc(strlen(win->prefix) + strlen(win->suffix) + 1);
 	(void)sprintf(title, "%s%s", win->prefix, win->suffix);
 	XChangeProperty(win->env.dpy, win->xwin, atoms[ATOM__NET_WM_NAME],
 	                XInternAtom(win->env.dpy, "UTF8_STRING", False), 8,
-	                PropModeReplace, (unsigned char *) title, strlen(title));
+	                PropModeReplace, (unsigned char *)title, strlen(title));
+	XChangeProperty(win->env.dpy, win->xwin, atoms[ATOM__NET_WM_ICON_NAME],
+	                XInternAtom(win->env.dpy, "UTF8_STRING", False), 8,
+	                PropModeReplace, (unsigned char *)title, strlen(title));
 	free(title);
 	free(suffix);
 
-	/* These three atoms won't change and thus only need to be set once. */
+	/* These two atoms won't change and thus only need to be set once. */
 	if (first_time) {
 		XStoreName(win->env.dpy, win->xwin, "sxiv");
 		XSetIconName(win->env.dpy, win->xwin, "sxiv");
-		XChangeProperty(win->env.dpy, win->xwin, atoms[ATOM__NET_WM_ICON_NAME],
-						XInternAtom(win->env.dpy, "UTF8_STRING", False), 8,
-						PropModeReplace, (unsigned char *)"sxiv", strlen("sxiv"));
 		first_time = false;
 	}
 }
