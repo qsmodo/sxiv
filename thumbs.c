@@ -210,7 +210,7 @@ Imlib_Image tns_scale_down(Imlib_Image im, int dim, bool square)
 	h = imlib_image_get_height();
 	if (square) {
 		if (dim >= w && dim >= h)
-            return im;
+			return im;
 		(w > h) ? (x = (w - h) / 2) : (y = (h - w) / 2);
 		w = h = (w < h) ? w : h;
 	} else {
@@ -479,11 +479,11 @@ void tns_mark(tns_t *tns, int n, bool mark)
 		win_t *win = tns->win;
 		thumb_t *t = &tns->thumbs[n];
 		unsigned long col = win->bg.pixel;
-        int oxy = (tns->bw + 1) / 2, owh = tns->bw;
+		int oxy = (tns->bw + 1) / 2, owh = tns->bw;
 
-        if (mark) col = win->markcol.pixel;
-        win_draw_rect(win, t->x - oxy, t->y - oxy, t->w + owh, t->h + owh,
-                      false, tns->bw, col);
+		if (mark) col = win->markcol.pixel;
+		win_draw_rect(win, t->x - oxy, t->y - oxy, t->w + owh, t->h + owh,
+		              false, tns->bw, col);
 
 		if (!mark && n == *tns->sel)
 			tns_highlight(tns, n, true);
