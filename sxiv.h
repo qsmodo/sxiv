@@ -421,6 +421,7 @@ struct win {
 
 	bool fullscreen;
 	bool handlerkey;
+	bool square;
 
 	XftColor bg;
 	XftColor fsbg;

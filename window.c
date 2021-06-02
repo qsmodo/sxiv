@@ -139,6 +139,7 @@ void win_init(win_t *win)
 
 	win->handlerkey = STREQ("true",
 	                        win_res(db, RES_CLASS ".handlerKey", "true"));
+	win->square = STREQ("true", win_res(db, RES_CLASS ".square", "false"));
 
 	win->bar.l.size = BAR_L_LEN;
 	win->bar.r.size = BAR_R_LEN;

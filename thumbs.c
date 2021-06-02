@@ -200,27 +200,35 @@ CLEANUP void tns_free(tns_t *tns)
 	cache_dir = NULL;
 }
 
-Imlib_Image tns_scale_down(Imlib_Image im, int dim)
+Imlib_Image tns_scale_down(Imlib_Image im, int dim, bool square)
 {
-	int w, h;
+	int w, h, rw = dim, rh = dim, x = 0, y = 0;
 	float z, zw, zh;
 
 	imlib_context_set_image(im);
 	w = imlib_image_get_width();
 	h = imlib_image_get_height();
-	zw = (float) dim / (float) w;
-	zh = (float) dim / (float) h;
-	z = MIN(zw, zh);
-	z = MIN(z, 1.0);
-
-	if (z < 1.0) {
-		imlib_context_set_anti_alias(1);
-		im = imlib_create_cropped_scaled_image(0, 0, w, h,
-		                                       MAX(z * w, 1), MAX(z * h, 1));
-		if (im == NULL)
-			error(EXIT_FAILURE, ENOMEM, NULL);
-		imlib_free_image_and_decache();
+	if (square) {
+		if (dim >= w && dim >= h)
+            return im;
+		(w > h) ? (x = (w - h) / 2) : (y = (h - w) / 2);
+		w = h = (w < h) ? w : h;
+	} else {
+		zw = (float) dim / (float) w;
+		zh = (float) dim / (float) h;
+		z = MIN(zw, zh);
+		z = MIN(z, 1.0);
+		if (z >= 1.0)
+			return im;
+		rw = MAX(z * w, 1);
+		rh = MAX(z * h, 1);
 	}
+	imlib_context_set_anti_alias(1);
+	im = imlib_create_cropped_scaled_image(x, y, w, h, rw, rh);
+	if (im == NULL)
+		error(EXIT_FAILURE, ENOMEM, NULL);
+	imlib_free_image_and_decache();
+
 	return im;
 }
 
@@ -333,7 +341,7 @@ bool tns_load(tns_t *tns, int n, bool force, bool cache_only)
 #if HAVE_LIBEXIF
 		exif_auto_orientate(file);
 #endif
-		im = tns_scale_down(im, maxwh);
+		im = tns_scale_down(im, maxwh, tns->win->square);
 		imlib_context_set_image(im);
 		if (imlib_image_get_width() == maxwh || imlib_image_get_height() == maxwh)
 			tns_cache_write(im, file->path, true);
@@ -342,7 +350,7 @@ bool tns_load(tns_t *tns, int n, bool force, bool cache_only)
 	if (cache_only) {
 		imlib_free_image_and_decache();
 	} else {
-		t->im = tns_scale_down(im, thumb_sizes[tns->zl]);
+		t->im = tns_scale_down(im, thumb_sizes[tns->zl], tns->win->square);
 		imlib_context_set_image(t->im);
 		t->w = imlib_image_get_width();
 		t->h = imlib_image_get_height();
