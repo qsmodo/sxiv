@@ -22,6 +22,8 @@ navigation [(#352)](https://github.com/muennich/sxiv/issues/352).
 
     * **External key handler** can be invoked in a single key press.
 
+    * **Square thumbnails**.
+
     * **Window title** consists of a prefix and a suffix. The prefix is
     a fixed string and the suffix is one of
 
